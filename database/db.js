@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
 
-const mongo_URL = "mongodb://0.0.0.0:27017/user";
+const MONGO_URL = "mongodb://0.0.0.0:27017/autenticacionLocalYT";
 
-const DB = async () => {
-  try {
-    await mongoose.connect(mongo_URL);
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error("Error connecting to MongoDB:", err);
-  }
+const db = async () => {
+  await mongoose
+    .connect(MONGO_URL)
+    .then(() => console.log("DB FUNCIONANDO"))
+    .catch((error) => console.error(error));
 };
 
-module.exports = DB;
+module.exports = db;

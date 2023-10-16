@@ -1,32 +1,30 @@
 const bcrypt = require("bcryptjs");
-const userSchema = require("../model/user.js");
+const Usuario = require("../model/usuario");
 
 const register = async (req, res) => {
-  const { nameuser, email, password } = req.body;
+  const { nombre, correo, contraseña } = req.body;
 
-  userSchema.findOne({ email }).then((user) => {
-    if (user) {
-      return res.json({ message: "Ya existe el usuario con ese correo" });
-    } else if (!nameuser || !email || !password) {
-      return res.json({ message: "Falta el nombre, correo o la contraseña" });
+  Usuario.findOne({ correo }).then((usuario) => {
+    if (usuario) {
+      return res.json({ mensaje: "Ya existe un usuario con ese correo" });
+    } else if (!nombre || !correo || !contraseña) {
+      return res.json({ mensaje: "Falta el nombre / correo / contraseña" });
     } else {
-      bcrypt.hash(password, 10, (err, hashPassword) => {
-        if (err) {
-          response.json({ err });
-        } else {
-          const newUser = new userSchema({
-            nameuser,
-            email,
-            password: hashPassword,
+      bcrypt.hash(contraseña, 10, (error, contraseñaHasheada) => {
+        if (error) res.json({ error });
+        else {
+          const nuevoUsuario = new Usuario({
+            nombre,
+            correo,
+            contraseña: contraseñaHasheada,
           });
-          newUser
+
+          nuevoUsuario
             .save()
-            .then((user) => {
-              res.json({ message: "Usuario creado correctamente", user });
+            .then((usuario) => {
+              res.json({ mensaje: "Usuario creado correctamente", usuario });
             })
-            .catch((err) => {
-              console.error("Error de crear el usuario:", err);
-            });
+            .catch((error) => console.error(error));
         }
       });
     }

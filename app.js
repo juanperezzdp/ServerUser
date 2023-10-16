@@ -1,20 +1,24 @@
 const express = require("express");
 const cors = require("cors");
-const DB = require("./database/db");
-const { register, login, getUserById } = require("./controllers/index");
+const db = require("./database/db");
 
-//config de servidor
+const controllers = require("./controllers");
+const verifyToken = require("./middlewares/verifyToken");
+
 const app = express();
-DB();
+
 app.use(cors());
 app.use(express.json());
 
-//rutas
-app.get("/user/:id", getUserById);
-app.post("/register", register);
-app.post("/login", login);
+app.get("/user", verifyToken, controllers.getUserById);
+app.post("/register", controllers.register);
+app.post("/login", controllers.login);
 
-const PORT = 3000;
+const PORT = 4000;
+
 app.listen(PORT, () => {
-  console.log(`server: ${PORT}`);
+  console.log(`SERVER FUNCIONANDO EN EL PUERTO ${PORT}`);
+  db();
 });
+
+module.exports = app;
